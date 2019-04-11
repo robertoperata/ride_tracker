@@ -21,7 +21,8 @@ public class RestControllerTest {
 		ride.setName("Toboga");
 		ride.setDuration(35);
 
-		restTemplate.put("http://localhost:8080/rideTracker/ride", ride);
+		ride = restTemplate.postForObject("http://localhost:8080/rideTracker/ride", ride, Ride.class);
+		System.out.println("Ride: " + ride);
 	}
 
 	@Test(timeout=5000)
