@@ -5,13 +5,16 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.pluralsight.repository.util.RideRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -27,20 +30,39 @@ public class RideRepositoryImpl implements RideRepository {
     @Override
     public Ride createRide(Ride ride) {
 //        jdbcTemplate.update("INSERT INTO ride  (NAME, DURATION) VALUES (?, ?)", ride.getName(), ride.getDuration());
-        KeyHolder key = new GeneratedKeyHolder();
-        jdbcTemplate.update(new PreparedStatementCreator() {
-            @Override
-            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+//        KeyHolder key = new GeneratedKeyHolder();
+//        jdbcTemplate.update(new PreparedStatementCreator() {
+//            @Override
+//            public PreparedStatement createPreparedStatement(Connection connection) throws SQLException {
+//
+//                PreparedStatement ps = connection.prepareStatement("INSERT INTO ride  (NAME, DURATION) VALUES (?, ?)", new String[] {"id"});
+//                ps.setString(1, ride.getName());
+//                ps.setInt(2, ride.getDuration());
+//                return  ps;
+//            }
+//        }, key);
+//
+//        Number id = key.getKey();
+//        return  getRide(id.intValue());
 
-                PreparedStatement ps = connection.prepareStatement("INSERT INTO ride  (NAME, DURATION) VALUES (?, ?)", new String[] {"id"});
-                ps.setString(1, ride.getName());
-                ps.setInt(2, ride.getDuration());
-                return  ps;
-            }
-        }, key);
+        SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
 
-        Number id = key.getKey();
-        return  getRide(id.intValue());
+        List<String> columns = new ArrayList<>();
+        columns.add("name");
+        columns.add("duration");
+
+        insert.setTableName("ride");
+        insert.setColumnNames(columns);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("name", ride.getName());
+        data.put("duration", ride.getDuration());
+
+        insert.setGeneratedKeyName("id");
+
+        Number key = insert.executeAndReturnKey(data);
+
+        return getRide(key.intValue());
     }
 
     private Ride getRide(int id) {
