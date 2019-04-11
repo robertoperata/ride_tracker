@@ -13,7 +13,7 @@ import org.junit.Test;
 
 public class RestControllerTest {
 
-	@Test(timeout = 5000)
+	@Test(timeout = 10000)
 	public void testCreateRide() {
 		RestTemplate restTemplate = new RestTemplate();
 
@@ -21,7 +21,7 @@ public class RestControllerTest {
 		ride.setName("Toboga");
 		ride.setDuration(35);
 
-		restTemplate.put("http://localhost:8080/rideTracker/ride" ,ride);
+		restTemplate.put("http://localhost:8080/rideTracker/ride", ride);
 	}
 
 	@Test(timeout=5000)
