@@ -76,4 +76,11 @@ public class RestControllerTest {
 
 		restTemplate.delete("http://localhost:8080/rideTracker/delete/6");
 	}
+
+	@Test(timeout = 5000)
+	public void testException() {
+		RestTemplate restTemplate = new RestTemplate();
+
+		restTemplate.getForObject("http://localhost:8080/rideTracker/test", Ride.class);
+	}
 }
