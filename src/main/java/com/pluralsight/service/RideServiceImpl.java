@@ -1,5 +1,7 @@
 package com.pluralsight.service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,5 +24,31 @@ public class RideServiceImpl implements RideService {
 	@Override
 	public List<Ride> getRides() {
 		return rideRepository.getRides();
+	}
+
+	@Override
+	public Ride getRide(Integer id) {
+		return rideRepository.getRide(id);
+	}
+
+	@Override
+	public Ride updateRide(Ride ride){
+		return rideRepository.updateRide(ride);
+	}
+
+	@Override
+	public void batch() {
+		List<Ride> rides = rideRepository.getRides();
+		List<Object[]> paris = new ArrayList<>();
+		for (Ride ride: rides) {
+			Object[] tmp = { new Date(), ride.getId() };
+			paris.add(tmp);
+		}
+		rideRepository.updateRides(paris);
+	}
+
+	@Override
+	public void deleteRide(Integer id) {
+		rideRepository.deleteRide(id);
 	}
 }

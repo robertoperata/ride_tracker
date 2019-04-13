@@ -65,7 +65,8 @@ public class RideRepositoryImpl implements RideRepository {
         return getRide(key.intValue());
     }
 
-    private Ride getRide(int id) {
+    @Override
+    public Ride getRide(Integer id) {
         Ride ride = jdbcTemplate.queryForObject("select * from ride where id = ?", new RideRowMapper(), id);
         return ride;
 
@@ -76,5 +77,22 @@ public class RideRepositoryImpl implements RideRepository {
 
         List<Ride> rides = jdbcTemplate.query("SELECT * FROM RIDE", new RideRowMapper());
         return rides;
+    }
+
+    @Override
+    public Ride updateRide(Ride ride) {
+        jdbcTemplate.update("UPDATE ride  SET name = ?, duration = ? WHERE id = ?",
+                ride.getName(), ride.getDuration(),  ride.getId() );
+        return ride;
+    }
+
+    @Override
+    public void updateRides(List<Object[]> pairs) {
+        jdbcTemplate.batchUpdate("UPDATE ride  SET ride_date = ? WHERE id = ?", pairs);
+    }
+
+    @Override
+    public void deleteRide(Integer id) {
+        jdbcTemplate.update("DELETE FROM ride where id = ?", id );
     }
 }
